@@ -26,8 +26,11 @@ SECRET_KEY = "django-insecure-wg@rt12kz78k=_v0cyl%o&($m#+uemwa1dr^!s@!li+-s*@5n8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'db033f4fa542.ngrok-free.app']
-
+ALLOWED_HOSTS = [
+    "api-ecommerce-backend-2.onrender.com",
+    "localhost",
+    "127.0.0.1",
+]
 # Application definition
 
 INSTALLED_APPS = [
