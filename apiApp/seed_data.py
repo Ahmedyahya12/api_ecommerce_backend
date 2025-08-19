@@ -1,11 +1,22 @@
 import os
-from django.core.files.images import ImageFile
-from django.core.management.base import BaseCommand
-from .models import Category, Product   # غيّر shop إلى اسم app عندك
+import sys
+import django
+from django.utils.text import slugify
 
-# مسار الصور (عدّل المسار إذا حاب)
-BASE_DIR = "D:/Django_projects/ecommerce-api/media/"
+# Chemin racine du projet
+PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(PROJECT_DIR)
 
+# Définir le settings module
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ecommerceApiProject.settings")
+django.setup()
+
+from apiApp.models import Category, Product
+
+# Chemin media pour les images
+MEDIA_DIR = os.path.join(PROJECT_DIR, "media")
+
+# Données à insérer
 categories_data = {
     "Food": [
         ("Pizza", "Delicious cheese pizza", 12.50, "product_img/pizza.jpg"),
@@ -39,34 +50,46 @@ categories_data = {
     ],
 }
 
+# Fonction utilitaire pour créer un slug unique
+def unique_slug(model, name):
+    slug = slugify(name)
+    counter = 1
+    unique = slug
+    while model.objects.filter(slug=unique).exists():
+        unique = f"{slug}-{counter}"
+        counter += 1
+    return unique
 
-class Command(BaseCommand):
-    help = "Seed database with categories and products"
+def run():
+    for cat_name, products in categories_data.items():
+        # Crée la catégorie avec slug unique
+        category, created = Category.objects.get_or_create(
+            name=cat_name,
+            defaults={'slug': unique_slug(Category, cat_name)}
+        )
+        print(f"{'✅' if created else 'ℹ️'} Category: {cat_name}")
 
-    def handle(self, *args, **kwargs):
-        for category_name, products in categories_data.items():
-            category, created = Category.objects.get_or_create(
-                name=category_name,
-                slug=category_name.lower()
+        for prod_name, description, price, img_rel_path in products:
+            # Chemin complet de l'image dans media
+            img_path = os.path.join(MEDIA_DIR, img_rel_path)
+            if not os.path.exists(img_path):
+                print(f"⚠️ Image not found: {img_path}")
+                img_path = None
+
+            # Crée le produit
+            product, _ = Product.objects.get_or_create(
+                name=prod_name,
+                defaults={
+                    'description': description,
+                    'price': price,
+                    'Category': category,
+                    'slug': unique_slug(Product, prod_name),
+                    'image': img_path
+                }
             )
-            if created:
-                self.stdout.write(self.style.SUCCESS(f"Category created: {category_name}"))
+            print(f"   📦 Product: {prod_name}")
 
-            for name, desc, price, img_path in products:
-                product, created = Product.objects.get_or_create(
-                    name=name,
-                    defaults={
-                        "description": desc,
-                        "price": price,
-                        "Category": category,
-                    }
-                )
-                if created:
-                    full_path = os.path.join(BASE_DIR, img_path)
-                    if os.path.exists(full_path):
-                        with open(full_path, "rb") as f:
-                            product.image = ImageFile(f, name=os.path.basename(full_path))
-                            product.save()
-                    self.stdout.write(self.style.SUCCESS(f"Product created: {name}"))
-                else:
-                    self.stdout.write(f"Product already exists: {name}")
+    print("🎉 Seed data completed!")
+
+if __name__ == "__main__":
+    run()

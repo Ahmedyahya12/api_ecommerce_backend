@@ -18,7 +18,5 @@ urlpatterns = [
    
    path("search/",views.product_search,name="product_search"),
 
-   path("mock_create_checkout_session/",views.mock_create_checkout_session,name="mock-create-checkout-session"),
-   path("mock_webhook_payment_success/",views.mock_webhook_payment_success,name="mock-create-checkout-session"),
 
 ]

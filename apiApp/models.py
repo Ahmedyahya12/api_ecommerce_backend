@@ -106,17 +106,26 @@ class Wishlist(models.Model):
 # Order
 # ------------------------
 class Order(models.Model):
-    stripe_checkout_id = models.CharField(max_length=255, unique=True)  # يمكن اعتباره معرف الدفع الوهمي
+    payment_reference = models.CharField(
+        max_length=255, blank=True, null=True
+    )  # يحل محل stripe_checkout_id كمرجع عام للدفع
     customer_email = models.EmailField()
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-    currency = models.CharField(max_length=10, default='USD')
-    status = models.CharField(max_length=20, choices=[("Pending", "Pending"), ("Paid", "Paid")], default="Pending")
+    currency = models.CharField(max_length=10, default='MRU')  # العملة المحلية
+    status = models.CharField(
+        max_length=20,
+        choices=[("Pending", "Pending"), ("Paid", "Paid")],
+        default="Pending"
+    )
+    payment_method = models.CharField(
+        max_length=50,
+        choices=[("Cash", "Cash"), ("Bankily", "Bankily")],
+        default="Cash"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Order {self.id} - {self.customer_email} - {self.status}"
-
-
 # ------------------------
 # OrderItem
 # ------------------------
