@@ -1,8 +1,10 @@
 
 from django.urls import path
 from . import views
+from . import view_template
 from . import MockPaymentAPI
 urlpatterns = [
+     path("Food_list",view_template.get_all_product,name='Food_list'),
    path("product_list",views.product_list,name='product_list'),
    path("products/<slug:slug>",views.product_detail,name="product_detail"),
    path("category_list",views.category_list,name="category_list"),

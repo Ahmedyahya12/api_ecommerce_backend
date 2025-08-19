@@ -1,7 +1,7 @@
 import os
 from django.core.files.images import ImageFile
 from django.core.management.base import BaseCommand
-from shop.models import Category, Product   # غيّر shop إلى اسم app عندك
+from .models import Category, Product   # غيّر shop إلى اسم app عندك
 
 # مسار الصور (عدّل المسار إذا حاب)
 BASE_DIR = "D:/Django_projects/ecommerce-api/media/"

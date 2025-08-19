@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+from dotenv import load_dotenv
+
+load_dotenv()  # charge .env local sur ton PC
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,8 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-wg@rt12kz78k=_v0cyl%o&($m#+uemwa1dr^!s@!li+-s*@5n8"
-
+# SECRET_KEY = "django-insecure-wg@rt12kz78k=_v0cyl%o&($m#+uemwa1dr^!s@!li+-s*@5n8"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
@@ -75,15 +78,23 @@ WSGI_APPLICATION = "ecommerceApiProject.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / "db.sqlite3",  # le fichier de la base sera créé à la racine du projet
+#     }
+# }
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / "db.sqlite3",  # le fichier de la base sera créé à la racine du projet
-    }
+    "default": dj_database_url.parse(
+        DATABASE_URL,
+        conn_max_age=600,
+        ssl_require=True
+    )
 }
 
-
-DATABASES["default"]=dj_database_url.parse(os.environ.get("DATABASE_URL"))
+# DATABASES["default"]=dj_database_url.parse(os.environ.get("DATABASE_URL"))
 
 # postgresql://ecommerce_db_h9yi_user:chZNX2PKn8JNrSEHGNPvWVNol95Q2RvJ@dpg-d2hjmdbipnbc73ela49g-a.ohio-postgres.render.com/ecommerce_db_h9yi
 # Password validation
