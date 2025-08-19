@@ -44,6 +44,11 @@ INSTALLED_APPS = [
     "rest_framework"
 
 ]
+INSTALLED_APPS += [
+    'cloudinary',
+    'cloudinary_storage',
+]
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -140,6 +145,15 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'  
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# استخدام Cloudinary لتخزين ملفات media
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dshrj0ols',   # من Dashboard
+    'API_KEY': '489657684699655',         # من Dashboard
+    'API_SECRET': 'zkK9_A1Cx_WzXyNDOOHEzdZtmEE',   # من Dashboard
+}
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
