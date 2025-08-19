@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
-
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,8 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-wg@rt12kz78k=_v0cyl%o&($m#+uemwa1dr^!s@!li+-s*@5n8"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False  # En production, toujours False
-ALLOWED_HOSTS = ['api-ecommerce-backend-2.onrender.com']
+DEBUG = os.environ.get("DEBUG", "False") == "True"
+
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost").split(",")
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -73,18 +75,17 @@ WSGI_APPLICATION = "ecommerceApiProject.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME'),       
-        'USER': os.environ.get('DB_USER'),       
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),       
-        'PORT': os.environ.get('DB_PORT', '5432'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",  # le fichier de la base sera créé à la racine du projet
     }
 }
 
+
+DATABASES["default"]=dj_database_url.parse(os.environ.get("DATABASE_URL"))
+
+# postgresql://ecommerce_db_h9yi_user:chZNX2PKn8JNrSEHGNPvWVNol95Q2RvJ@dpg-d2hjmdbipnbc73ela49g-a.ohio-postgres.render.com/ecommerce_db_h9yi
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
