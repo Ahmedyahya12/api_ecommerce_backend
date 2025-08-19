@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 import dj_database_url
 from dotenv import load_dotenv
-
+import cloudinary
 load_dotenv()  # charge .env local sur ton PC
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,13 +41,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "apiApp",
-    "rest_framework"
+    "rest_framework",
+     "cloudinary",
+    "cloudinary_storage",
 
 ]
-INSTALLED_APPS += [
-    'cloudinary',
-    'cloudinary_storage',
-]
+
 
 
 MIDDLEWARE = [
@@ -143,18 +142,22 @@ STATICFILES_DIRS = [
 ]
 
 
-MEDIA_URL = '/media/'  
-
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# استخدام Cloudinary لتخزين ملفات media
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# MEDIA_URL = '/media/' 
+# Media files sur Cloudinary
+cloudinary.config(
+    cloud_name="dshrj0ols",
+    api_key="573264296988947",
+    api_secret="hWmo-0iiyEYBlCfTrJ4D8c1l2x4"
+)
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dshrj0ols',   # من Dashboard
-    'API_KEY': '489657684699655',         # من Dashboard
-    'API_SECRET': 'zkK9_A1Cx_WzXyNDOOHEzdZtmEE',   # من Dashboard
+    "CLOUD_NAME": "dshrj0ols",
+    "API_KEY": "573264296988947",
+    "API_SECRET": "hWmo-0iiyEYBlCfTrJ4D8c1l2x4",
 }
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+# MEDIA_URL = "https://res.cloudinary.com/dshrj0ols/image/upload/"
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
